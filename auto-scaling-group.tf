@@ -14,10 +14,16 @@ resource "aws_launch_template" "auto-scaling-group" {
 }
 
 resource "aws_autoscaling_group" "asg-1" {
+  name = "ASG-webTier"
   availability_zones = ["us-east-1a"]
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  desired_capacity   = 2
+  max_size           = 4
+  min_size           = 2
+
+# When tf is run again, it wont try to wipe changes due to scaling policy
+    lifecycle { 
+    ignore_changes = [desired_capacity, target_group_arns]
+  }
 
   launch_template {
     id      = aws_launch_template.auto-scaling-group.id
@@ -42,10 +48,15 @@ resource "aws_launch_template" "auto-scaling-group-private" {
 }
 
 resource "aws_autoscaling_group" "asg-2" {
+  name = "ASG-appTier"
   availability_zones = ["us-east-1a"]
-  desired_capacity   = 1
-  max_size           = 2
-  min_size           = 1
+  desired_capacity   = 2
+  max_size           = 4
+  min_size           = 2
+
+    lifecycle { 
+    ignore_changes = [desired_capacity, target_group_arns]
+  }
 
   launch_template {
     id      = aws_launch_template.auto-scaling-group-private.id
